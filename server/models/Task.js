@@ -3,17 +3,22 @@ const _ = require('underscore');
 
 const setName = (name) => _.escape(name).trim();
 
-const DomoSchema = new mongoose.Schema({
+const TaskSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     trim: true,
     set: setName,
   },
-  age: {
+  time: {
     type: Number,
     min: 0,
     required: true,
+  },
+  category: {
+    type: String,
+    required: true,
+    trim: true,
   },
   owner: {
     type: mongoose.Schema.ObjectId,
@@ -26,10 +31,11 @@ const DomoSchema = new mongoose.Schema({
   },
 });
 
-DomoSchema.statics.toAPI = (doc) => ({
+TaskSchema.statics.toAPI = (doc) => ({
   name: doc.name,
-  age: doc.name,
+  time: doc.name,
+  category: doc.category,
 });
 
-const DomoModel = mongoose.model('Domo', DomoSchema);
-module.exports = DomoModel;
+const TaskModel = mongoose.model('Task', TaskSchema);
+module.exports = TaskModel;

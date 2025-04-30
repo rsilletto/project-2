@@ -3,86 +3,89 @@ const React = require('react');
 const { useState, useEffect } = React;
 const { createRoot } = require('react-dom/client');
 
-const handleDomo = (e, onDomoAdded) => {
+const handleTask = (e, onTaskAdded) => {
     e.preventDefault();
 
-    const name = e.target.querySelector('#domoName').value;
-    const age = e.target.querySelector('#domoAge').value;
+    const name = e.target.querySelector('#taskName').value;
+    const time = e.target.querySelector('#taskTime').value;
+    const category = e.target.querySelector("#taskCat").value;
 
-    if(!name || !age){
+    if(!name || !time || !category){
         helper.handleError('All fields are required');
         return false;
     }
 
-    helper.sendPost(e.target.action, {name, age}, onDomoAdded);
+    helper.sendPost(e.target.action, {name, time, category}, onTaskAdded);
     return false;
 }
 
-const DomoForm = (props) => {
+const TaskForm = (props) => {
     return(
-        <form id='domoForm'
-            onSubmit={(e) => handleDomo(e, props.triggerReload)}
-            name='domoForm'
+        <form id='taskForm'
+            onSubmit={(e) => handleTask(e, props.triggerReload)}
+            name='taskForm'
             action='/maker'
             method='POST'
-            className='domoForm'
+            className='taskForm'
         >
-            <label htmlFor='name'>Name: </label>
-            <input id='domoName' type='text' name='name' placeholder='Domo Name' />
-            <label htmlFor='age'>Age: </label>
-            <input id='domoAge' type='number' min='0' name='age' />
-            <input className='makeDomoSubmit' type='submit' value='Make Domo' />  
+            <label htmlFor='name'>Task: </label>
+            <input id='taskName' type='text' name='name' placeholder='Task Name' />
+            <label htmlFor='time'>Time to Complete: </label>
+            <input id='taskTime' type='number' min='0' name='time' />
+            <label htmlFor="category">Category: </label>
+            <input id='taskCat' type="text" name='category' placeholder='Task Category' />
+            <input className='taskSubmit' type='submit' value='Create Task' />  
         </form>
     );
 };
 
-const DomoList = (props) => {
-    const [domos, setDomos] = useState(props.domos);
+const TaskList = (props) => {
+    const [tasks, setTasks] = useState(props.tasks);
 
     useEffect(() => {
-        const loadDomosFromServer = async () => {
-            const response = await fetch('/getDomos');
+        const loadTasksFromServer = async () => {
+            const response = await fetch('/getTasks');
             const data = await response.json();
-            setDomos(data.domos);
+            setDomos(data.tasks);
         };
-        loadDomosFromServer();
-    }, [props.reloadDomos]);
+        loadTasksFromServer();
+    }, [props.reloadTasks]);
 
-    if(domos.length === 0){
+    if(tasks.length === 0){
         return (
-            <div className='domoList'>
-                <h3 className='emptyDomo'>No Domos Yet!</h3>
+            <div className='taskList'>
+                <h3 className='emptyList'>No Tasks Yet!</h3>
             </div>
         );
     }
 
-    const domoNodes = domos.map(domo => {
+    const taskNodes = tasks.map(task => {
         return (
-            <div key={domo.id} className='domo'>
-                <img src='/assets/img/domoface.jpeg' alt='domo face' className='domoFace' />
-                <h3 className='domoName'>Name: {domo.name}</h3>
-                <h3 className='domoAge'>Age: {domo.age}</h3>
+            <div key={domo.id} className='task'>
+                <h3 className='taskName'>Name: {task.name}</h3>
+                <h3 className='taskTime'>Time: {task.time}</h3>
+                <h3 className='taskCat' >Category: {task.category}</h3>
             </div>
         );
     });
 
     return (
-        <div className='domoList'>
-            {domoNodes}
+        <div className='taskList'>
+            {taskNodes}
         </div>
     );
 };
 
 const App = () => {
-    const [reloadDomos, setReloadDomos] = useState(false);
+    const [reloadTasks, setReloadTasks] = useState(false);
 
     return (
         <div>
-            <div id='makeDomo'>
-                <DomoForm triggerReload={() => setReloadDomos(!reloadDomos)} />
+            <div id='makeTask'>
+                <TaskForm triggerReload={() => setReloadTasks(!reloadTasks)} />
             </div>
-            <div id='domos'>
-                <DomoList domos={[]} reloadDomos={reloadDomos} />
+            <div id='tasks'>
+                <TaskList tasks={[]} reloadTasks={reloadTasks} />
             </div>
         </div>
     );
