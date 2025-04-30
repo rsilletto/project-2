@@ -5,7 +5,6 @@ const { createRoot } = require('react-dom/client');
 
 const handleDomo = (e, onDomoAdded) => {
     e.preventDefault();
-    helper.hideError();
 
     const name = e.target.querySelector('#domoName').value;
     const age = e.target.querySelector('#domoAge').value;
