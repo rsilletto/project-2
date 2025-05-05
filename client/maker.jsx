@@ -30,7 +30,7 @@ const TaskForm = (props) => {
         >
             <label htmlFor='name'>Task: </label>
             <input id='taskName' type='text' name='name' placeholder='Task Name' />
-            <label htmlFor='time'>Time to Complete: </label>
+            <label htmlFor='time'>Time: </label>
             <input id='taskTime' type='number' min='0' name='time' />
             <label htmlFor="category">Category: </label>
             <input id='taskCat' type="text" name='category' placeholder='Task Category' />
@@ -46,7 +46,7 @@ const TaskList = (props) => {
         const loadTasksFromServer = async () => {
             const response = await fetch('/getTasks');
             const data = await response.json();
-            setDomos(data.tasks);
+            setTasks(data.tasks);
         };
         loadTasksFromServer();
     }, [props.reloadTasks]);
@@ -61,7 +61,7 @@ const TaskList = (props) => {
 
     const taskNodes = tasks.map(task => {
         return (
-            <div key={domo.id} className='task'>
+            <div key={task.id} className='task'>
                 <h3 className='taskName'>Name: {task.name}</h3>
                 <h3 className='taskTime'>Time: {task.time}</h3>
                 <h3 className='taskCat' >Category: {task.category}</h3>
