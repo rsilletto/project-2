@@ -40,7 +40,7 @@ const TaskForm = (props) => {
 };
 
 const TaskList = (props) => {
-    const [tasks, setTasks] = useState(props.tasks);
+    let [tasks, setTasks] = useState(props.tasks);
 
     useEffect(() => {
         const loadTasksFromServer = async () => {
@@ -59,12 +59,21 @@ const TaskList = (props) => {
         );
     }
 
-    const taskNodes = tasks.map(task => {
+    const removeTask = (index) => {
+        setTasks(tasks.filter((_, i) => i !== index));
+    }
+
+    const taskNodes = tasks.map((task, index) => {
         return (
             <div key={task.id} className='task'>
                 <h3 className='taskName'>Name: {task.name}</h3>
-                <h3 className='taskTime'>Time: {task.time}</h3>
+                <h3 className='taskTime'>Time: {task.time} minutes</h3>
                 <h3 className='taskCat' >Category: {task.category}</h3>
+                <button 
+                    className='removeTask'
+                    key={`task${index}`}
+                    onClick={() => removeTask(index)}
+                >Delete Task</button>
             </div>
         );
     });
@@ -77,7 +86,7 @@ const TaskList = (props) => {
 };
 
 const App = () => {
-    const [reloadTasks, setReloadTasks] = useState(false);
+    const [reloadTasks, setReloadTasks] = useState(true);
 
     return (
         <div>
