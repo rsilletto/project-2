@@ -33,6 +33,42 @@ const handleError = (message) => {
     }
   };
 
+  const removeData = async (url, data, handler, id) => {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+  
+
+    Task.findByIdAndDelete((req.body.id),
+      function (err, data) {
+        if (err) {
+          console.log(err);
+        }
+        else {
+          response.send(data);
+        }
+    });
+
+    const result = await response.json();
+
+    if(result.redirect) {
+      window.location = result.redirect;
+    }
+  
+    if(result.error) {
+      handleError(result.error);
+    }
+
+    if(handler) {
+        handler(result);
+    }
+
+  };
+
 module.exports = {
-    handleError, sendPost,
+    handleError, sendPost, removeData,
 }
