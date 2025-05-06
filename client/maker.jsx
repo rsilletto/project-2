@@ -30,7 +30,7 @@ const TaskForm = (props) => {
         >
             <label htmlFor='name'>Task: </label>
             <input id='taskName' type='text' name='name' placeholder='Task Name' />
-            <label htmlFor='time'>Time: </label>
+            <label htmlFor='time'>Time (m): </label>
             <input id='taskTime' type='number' min='0' name='time' />
             <label htmlFor="category">Category: </label>
             <input id='taskCat' type="text" name='category' placeholder='Task Category' />
@@ -60,20 +60,26 @@ const TaskList = (props) => {
     }
 
     const removeTask = (index) => {
-        setTasks(tasks.filter((_, i) => i !== index));
+        // setTasks(tasks.filter((_, i) => i !== index)); // sourced from StackOverflow
+        // setTasks(tasks.filter((task) => task.id !== id)); // not working
+        // const newArr = tasks.filter(task => task.id !== id);
+        // setTasks(newArr);
+
+        setTasks(tasks => {
+            return tasks.filter((_, i) => i !== index);
+        });
     }
 
     const taskNodes = tasks.map((task, index) => {
         return (
             <div key={task.id} className='task'>
                 <h3 className='taskName'>Name: {task.name}</h3>
-                <h3 className='taskTime'>Time: {task.time} minutes</h3>
-                <h3 className='taskCat' >Category: {task.category}</h3>
-                <button 
-                    className='removeTask'
-                    key={`task${index}`}
+                 <button 
+                    className='delTask'
                     onClick={() => removeTask(index)}
                 >Delete Task</button>
+                <h3 className='taskTime'>Time: {task.time} minutes</h3>
+                <h3 className='taskCat' >Category: {task.category}</h3>
             </div>
         );
     });
@@ -86,7 +92,7 @@ const TaskList = (props) => {
 };
 
 const App = () => {
-    const [reloadTasks, setReloadTasks] = useState(true);
+    const [reloadTasks, setReloadTasks] = useState(false);
 
     return (
         <div>
