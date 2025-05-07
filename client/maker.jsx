@@ -15,6 +15,11 @@ const handleTask = (e, onTaskAdded) => {
         return false;
     }
 
+    if(tasks.length >= 10){ // doesn't work as intended currently
+        helper.handleError('You need a Premium account to add more tasks.');
+        return false;
+    }
+
     helper.sendPost(e.target.action, {name, time, category}, onTaskAdded);
     return false;
 }
@@ -59,29 +64,24 @@ const TaskList = (props) => {
         );
     }
 
-    const removeTask = (index, id) => {
-       const deleteFromServer = async () => {
-                const response = await fetch('/removeTask', {
+    const removeTask = async (index, id) => {
+        const response = await fetch('/removeTask', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
                     },
-                    body: id,
+                    body: JSON.stringify({ id }),
                   });
                 const data = await response.json();
-                setTasks(data.tasks);
-        };
-        deleteFromServer();
-        
-        // setTasks(tasks.filter((_, i) => i !== index)); // sourced from StackOverflow
-        // setTasks(tasks.filter((task) => task.id !== id)); // not working
-        // const newArr = tasks.filter(task => task.id !== id);
-        // setTasks(newArr);
-
-        setTasks(tasks => {
-            return tasks.filter((_, i) => i !== index);
-        }); 
-    }
+           
+        if (response.ok){
+            setTasks(tasks => {
+                return tasks.filter((_, i) => i !== index);
+            }); 
+        } else {
+            alert(data.error || 'Error deleting Task');
+        }
+    };
 
     const taskNodes = tasks.map((task, index) => {
         return (
@@ -89,7 +89,7 @@ const TaskList = (props) => {
                 <h3 className='taskName'>Name: {task.name}</h3>
                  <button 
                     className='delTask'
-                    onClick={() => removeTask(index, task.id)}
+                    onClick={() => removeTask(index, task._id)}
                 >Delete Task</button>
                 <h3 className='taskTime'>Time: {task.time} minutes</h3>
                 <h3 className='taskCat' >Category: {task.category}</h3>

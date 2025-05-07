@@ -160,13 +160,13 @@ nav:nth-child(1) {
     width: 250px;
     z-index:300;
 } */
-/* 
+
 #errorMessage {
     font-size: 1.2em;
     font-weight: bold;
     color: red;
     font-style: italic;
-} */
+}
 
 #task {
     z-index: 225;

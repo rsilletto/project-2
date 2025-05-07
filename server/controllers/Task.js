@@ -45,12 +45,29 @@ const makeTasks = async (req, res) => {
 };
 
 const removeTask = async (req, res) => {
+  // try {
+  //   const remove = await Task.findByIdAndDelete(req.body.id);
+  //   return res.json({ tasks: remove });
+  // } catch (err) {
+  //   console.log(err);
+  //   return res.status(500).json({ error: 'Error deleting task!' });
+  // }
+
+  const { id } = req.body;
+
+  if (!id){
+    return res.status(400).json({ error: "Task ID is required" });
+  }
+
   try {
-    const remove = await Task.findByIdAndDelete(req.body.id);
-    return res.json({ tasks: remove });
+    const removedTask = await Task.findByIdAndDelete(id);
+    if(!removedTask){
+      return res.status(404).json({ error: "Task not found!" });
+    }
+    return res.status(200).json({ message: "Task deleted successfully" });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: 'Error deleting task!' });
+    return res.status(500).json({ error: "Error occurred while deleting task" });
   }
 }
 
