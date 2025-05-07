@@ -59,7 +59,20 @@ const TaskList = (props) => {
         );
     }
 
-    const removeTask = (index) => {
+    const removeTask = (index, id) => {
+       const deleteFromServer = async () => {
+                const response = await fetch('/removeTask', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: id,
+                  });
+                const data = await response.json();
+                setTasks(data.tasks);
+        };
+        deleteFromServer();
+        
         // setTasks(tasks.filter((_, i) => i !== index)); // sourced from StackOverflow
         // setTasks(tasks.filter((task) => task.id !== id)); // not working
         // const newArr = tasks.filter(task => task.id !== id);
@@ -67,7 +80,7 @@ const TaskList = (props) => {
 
         setTasks(tasks => {
             return tasks.filter((_, i) => i !== index);
-        });
+        }); 
     }
 
     const taskNodes = tasks.map((task, index) => {
@@ -76,7 +89,7 @@ const TaskList = (props) => {
                 <h3 className='taskName'>Name: {task.name}</h3>
                  <button 
                     className='delTask'
-                    onClick={() => removeTask(index)}
+                    onClick={() => removeTask(index, task.id)}
                 >Delete Task</button>
                 <h3 className='taskTime'>Time: {task.time} minutes</h3>
                 <h3 className='taskCat' >Category: {task.category}</h3>

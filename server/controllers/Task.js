@@ -44,8 +44,19 @@ const makeTasks = async (req, res) => {
   }
 };
 
+const removeTask = async (req, res) => {
+  try {
+    const remove = await Task.findByIdAndDelete(req.body.id);
+    return res.json({ tasks: remove });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error deleting task!' });
+  }
+}
+
 module.exports = {
   makerPage,
   getTasks,
   makeTasks,
+  removeTask,
 };
